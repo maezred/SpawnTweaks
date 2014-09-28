@@ -1,0 +1,6 @@
+name: SpawnTweaks
+version: 1.2.0
+description: Tweaks spawning behavior of mobs.
+author: moltendorf
+website: http://dev.bukkit.org/server-mods/moltendorf-spawntweaks/
+main: com.moltendorf.bukkit.spawntweaks.Plugin
