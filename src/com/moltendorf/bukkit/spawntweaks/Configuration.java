@@ -38,6 +38,7 @@ public class Configuration {
 			EntityType.PIG_ZOMBIE,
 			EntityType.SILVERFISH,
 			EntityType.SKELETON,
+			EntityType.SLIME,
 			EntityType.SPIDER,
 			EntityType.WITCH,
 			EntityType.ZOMBIE
