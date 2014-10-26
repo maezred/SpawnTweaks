@@ -46,9 +46,15 @@ public class Configuration {
 		));
 
 		final protected HashSet<CreatureSpawnEvent.SpawnReason> spawnReasons = new HashSet<>(Arrays.asList(
+			CreatureSpawnEvent.SpawnReason.BREEDING,
 			CreatureSpawnEvent.SpawnReason.NATURAL,
 			CreatureSpawnEvent.SpawnReason.NETHER_PORTAL,
+			CreatureSpawnEvent.SpawnReason.SPAWNER,
 			CreatureSpawnEvent.SpawnReason.VILLAGE_INVASION
+		));
+
+		final protected HashSet<EntityType> breedingCreatures = new HashSet<>(Arrays.asList(
+			EntityType.VILLAGER
 		));
 
 		final protected HashMap<Biome, BiomeConfig> biomes = new HashMap<Biome, BiomeConfig>() {{

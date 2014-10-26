@@ -10,6 +10,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 
+import java.util.HashSet;
 import java.util.Map;
 
 /**
@@ -24,49 +25,50 @@ public class Listeners implements Listener {
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-	public void CreatureSpawnEventListener(CreatureSpawnEvent event) {
-		EntityType type = event.getEntityType();
+	public void CreatureSpawnEventListener(final CreatureSpawnEvent event) {
+		final Location location = event.getLocation();
+		final CreatureSpawnEvent.SpawnReason reason = event.getSpawnReason();
+		final EntityType type = event.getEntityType();
+		final World world = location.getWorld();
 
-		if (plugin.configuration.global.limitedCreatures.contains(type)) {
-			Location location = event.getLocation();
-			World world = location.getWorld();
+		final HashSet spawnReasons = plugin.configuration.global.spawnReasons;
 
-			if (location.getWorld().getLivingEntities().size() >= 1000) {
-				event.setCancelled(true);
+		if (spawnReasons.contains(reason)) {
+			if (world.getLivingEntities().size() >= 1000) {
+				final HashSet breedingCreatures = plugin.configuration.global.breedingCreatures;
 
-				return;
-			}
-
-			if (plugin.configuration.global.spawnReasons.contains(event.getSpawnReason())) {
-				Block block = location.getBlock();
-
-				if (plugin.configuration.global.blockLight < block.getLightFromBlocks()) {
+				if (reason != CreatureSpawnEvent.SpawnReason.BREEDING || breedingCreatures.contains(type)) {
 					event.setCancelled(true);
 
 					return;
 				}
+			}
 
-//				if (plugin.configuration.global.skyLight < block.getLightFromSky()) {
-//					event.setCancelled(true);
-//
-//					return;
-//				}
+			final Block block = location.getBlock();
 
-				Biome biome = world.getBiome(location.getBlockX(), location.getBlockZ());
-				BiomeConfig biomeConfig = plugin.configuration.global.biomes.get(biome);
+			final int blockLightLimit = plugin.configuration.global.blockLight;
+			final HashSet limitedCreatures = plugin.configuration.global.limitedCreatures;
 
-				if (biomeConfig != null && biomeConfig.search.contains(type)) {
-					double roll = Math.random() * biomeConfig.maxRoll;
+			if (blockLightLimit < block.getLightFromBlocks() && limitedCreatures.contains(type)) {
+				event.setCancelled(true);
 
-					for (Map.Entry<EntityType, Double> entry : biomeConfig.replace.entrySet()) {
-						if (roll < entry.getValue()) {
-							event.setCancelled(true);
+				return;
+			}
+		}
 
-							world.spawnEntity(location, entry.getKey());
+		final Biome biome = world.getBiome(location.getBlockX(), location.getBlockZ());
+		final BiomeConfig biomeConfig = plugin.configuration.global.biomes.get(biome);
 
-							return;
-						}
-					}
+		if (biomeConfig != null && biomeConfig.search.contains(type)) {
+			final double roll = Math.random() * biomeConfig.maxRoll;
+
+			for (Map.Entry<EntityType, Double> entry : biomeConfig.replace.entrySet()) {
+				if (roll < entry.getValue()) {
+					event.setCancelled(true);
+
+					world.spawnEntity(location, entry.getKey());
+
+					return;
 				}
 			}
 		}
