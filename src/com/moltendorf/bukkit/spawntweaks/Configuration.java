@@ -2,6 +2,7 @@ package com.moltendorf.bukkit.spawntweaks;
 
 import org.bukkit.block.Biome;
 import org.bukkit.entity.EntityType;
+import org.bukkit.event.entity.CreatureSpawnEvent;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -42,6 +43,12 @@ public class Configuration {
 			EntityType.SPIDER,
 			EntityType.WITCH,
 			EntityType.ZOMBIE
+		));
+
+		final protected HashSet<CreatureSpawnEvent.SpawnReason> spawnReasons = new HashSet<>(Arrays.asList(
+			CreatureSpawnEvent.SpawnReason.NATURAL,
+			CreatureSpawnEvent.SpawnReason.NETHER_PORTAL,
+			CreatureSpawnEvent.SpawnReason.VILLAGE_INVASION
 		));
 
 		final protected HashMap<Biome, BiomeConfig> biomes = new HashMap<Biome, BiomeConfig>() {{

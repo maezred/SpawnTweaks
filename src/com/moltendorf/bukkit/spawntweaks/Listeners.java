@@ -37,7 +37,7 @@ public class Listeners implements Listener {
 				return;
 			}
 
-			if (event.getSpawnReason() == CreatureSpawnEvent.SpawnReason.NATURAL) {
+			if (plugin.configuration.global.spawnReasons.contains(event.getSpawnReason())) {
 				Block block = location.getBlock();
 
 				if (plugin.configuration.global.blockLight < block.getLightFromBlocks()) {
