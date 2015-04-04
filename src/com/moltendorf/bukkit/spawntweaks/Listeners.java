@@ -15,13 +15,27 @@ import java.util.Map;
 
 /**
  * Created by moltendorf on 14/09/10.
+ *
+ * @author moltendorf
  */
 public class Listeners implements Listener {
 
 	final protected Plugin plugin;
 
+	protected double ticks = 20;
+	protected long time;
+
 	protected Listeners(final Plugin instance) {
 		plugin = instance;
+
+		time = System.currentTimeMillis();
+
+		plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
+			long current = System.currentTimeMillis();
+
+			ticks = (current - time) / 20L;
+			time = current;
+		}, 5 * 20, 5 * 20);
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
@@ -34,7 +48,7 @@ public class Listeners implements Listener {
 		final HashSet spawnReasons = plugin.configuration.global.spawnReasons;
 
 		if (spawnReasons.contains(reason)) {
-			if (world.getLivingEntities().size() >= 1000) {
+			if (ticks >= 18) {
 				final HashSet breedingCreatures = plugin.configuration.global.breedingCreatures;
 
 				if (reason != CreatureSpawnEvent.SpawnReason.BREEDING || breedingCreatures.contains(type)) {
