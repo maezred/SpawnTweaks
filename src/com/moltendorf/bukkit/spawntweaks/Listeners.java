@@ -31,10 +31,17 @@ public class Listeners implements Listener {
 		time = System.currentTimeMillis();
 
 		plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
-			long current = System.currentTimeMillis();
+			long currentTime = System.currentTimeMillis();
+			double currentTicks = (currentTime - time) / 20L;
 
-			ticks = (current - time) / 20L;
-			time = current;
+			if (currentTicks >= 18 && ticks < 18) {
+				System.out.println("§2Spawning has resumed!");
+			} else if (currentTicks >= 18 && ticks < 18) {
+				System.out.println("§4Spawning has been paused!");
+			}
+
+			time = currentTime;
+			ticks = currentTicks;
 		}, 5 * 20, 5 * 20);
 	}
 
