@@ -4,6 +4,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -30,14 +31,16 @@ public class Listeners implements Listener {
 
 		time = System.currentTimeMillis();
 
+		final ConsoleCommandSender console = plugin.getServer().getConsoleSender();
+
 		plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
 			long currentTime = System.currentTimeMillis();
-			double currentTicks = (currentTime - time) / 20L;
+			double currentTicks = 5. * 20. * 1000. / (currentTime - time);
 
 			if (currentTicks >= 18 && ticks < 18) {
-				System.out.println("§2Spawning has resumed!");
-			} else if (currentTicks >= 18 && ticks < 18) {
-				System.out.println("§4Spawning has been paused!");
+				console.sendMessage("§2Spawning has resumed! TPS is over 18.");
+			} else if (currentTicks < 18 && ticks >= 18) {
+				console.sendMessage("§4Spawning has been paused! TPS is below 18.");
 			}
 
 			time = currentTime;
