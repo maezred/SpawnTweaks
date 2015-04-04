@@ -34,8 +34,8 @@ public class Listeners implements Listener {
 		final ConsoleCommandSender console = plugin.getServer().getConsoleSender();
 
 		plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
-			long currentTime = System.currentTimeMillis();
-			double currentTicks = 5. * 20. * 1000. / (currentTime - time);
+			final long currentTime = System.currentTimeMillis();
+			final double currentTicks = 5. * 20. * 1000. / (currentTime - time);
 
 			if (currentTicks >= 18 && ticks < 18) {
 				console.sendMessage("§2Spawning has resumed! TPS is over 18.");
@@ -58,7 +58,7 @@ public class Listeners implements Listener {
 		final HashSet spawnReasons = plugin.configuration.global.spawnReasons;
 
 		if (spawnReasons.contains(reason)) {
-			if (ticks >= 18) {
+			if (ticks < 18) {
 				final HashSet breedingCreatures = plugin.configuration.global.breedingCreatures;
 
 				if (reason != CreatureSpawnEvent.SpawnReason.BREEDING || breedingCreatures.contains(type)) {
