@@ -10,6 +10,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
+import org.bukkit.scheduler.BukkitScheduler;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -96,6 +97,17 @@ public class Listeners implements Listener {
 						return;
 					}
 				}
+			}
+		}
+
+		// 2.5x more spawner mobs.
+		if (reason == CreatureSpawnEvent.SpawnReason.SPAWNER) {
+			final int roll = (int) (Math.random() * 4.);
+
+			final BukkitScheduler scheduler = plugin.getServer().getScheduler();
+
+			for (int i = 0; i < roll; ++i) {
+				scheduler.scheduleSyncDelayedTask(plugin, () -> world.spawnEntity(location, type), (i + 1) * 20);
 			}
 		}
 	}
