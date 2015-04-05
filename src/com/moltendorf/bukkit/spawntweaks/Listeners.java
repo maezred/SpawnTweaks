@@ -80,19 +80,21 @@ public class Listeners implements Listener {
 			}
 		}
 
-		final Biome biome = world.getBiome(location.getBlockX(), location.getBlockZ());
-		final BiomeConfig biomeConfig = plugin.configuration.global.biomes.get(biome);
+		if (reason == CreatureSpawnEvent.SpawnReason.NATURAL) {
+			final Biome biome = world.getBiome(location.getBlockX(), location.getBlockZ());
+			final BiomeConfig biomeConfig = plugin.configuration.global.biomes.get(biome);
 
-		if (biomeConfig != null && biomeConfig.search.contains(type)) {
-			final double roll = Math.random() * biomeConfig.maxRoll;
+			if (biomeConfig != null && biomeConfig.search.contains(type)) {
+				final double roll = Math.random() * biomeConfig.maxRoll;
 
-			for (Map.Entry<EntityType, Double> entry : biomeConfig.replace.entrySet()) {
-				if (roll < entry.getValue()) {
-					event.setCancelled(true);
+				for (Map.Entry<EntityType, Double> entry : biomeConfig.replace.entrySet()) {
+					if (roll < entry.getValue()) {
+						event.setCancelled(true);
 
-					world.spawnEntity(location, entry.getKey());
+						world.spawnEntity(location, entry.getKey());
 
-					return;
+						return;
+					}
 				}
 			}
 		}
