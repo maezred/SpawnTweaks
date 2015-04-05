@@ -59,7 +59,7 @@ public class Listeners implements Listener {
 		final HashSet spawnReasons = plugin.configuration.global.spawnReasons;
 
 		if (spawnReasons.contains(reason)) {
-			if (ticks < 18) {
+			if (ticks < 16) {
 				final HashSet breedingCreatures = plugin.configuration.global.breedingCreatures;
 
 				if (reason != CreatureSpawnEvent.SpawnReason.BREEDING || breedingCreatures.contains(type)) {
@@ -101,7 +101,7 @@ public class Listeners implements Listener {
 		}
 
 		// 2.5x more spawner mobs.
-		if (reason == CreatureSpawnEvent.SpawnReason.SPAWNER) {
+		if (ticks > 18 && reason == CreatureSpawnEvent.SpawnReason.SPAWNER) {
 			final int roll = (int) (Math.random() * 4.);
 
 			final BukkitScheduler scheduler = plugin.getServer().getScheduler();
