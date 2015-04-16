@@ -30,23 +30,25 @@ public class Listeners implements Listener {
 	protected Listeners(final Plugin instance) {
 		plugin = instance;
 
-		time = System.currentTimeMillis();
-
 		final ConsoleCommandSender console = plugin.getServer().getConsoleSender();
 
-		plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
-			final long currentTime = System.currentTimeMillis();
-			final double currentTicks = 5. * 20. * 1000. / (currentTime - time);
+		plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
+			time = System.currentTimeMillis();
 
-			if (currentTicks >= 18 && ticks < 18) {
-				console.sendMessage("§2Spawning has resumed! TPS is over 18.");
-			} else if (currentTicks < 18 && ticks >= 18) {
-				console.sendMessage("§4Spawning has been paused! TPS is below 18.");
-			}
+			plugin.getServer().getScheduler().runTaskTimer(plugin, () -> {
+				final long currentTime = System.currentTimeMillis();
+				final double currentTicks = 5.*20.*1000./(currentTime - time);
 
-			time = currentTime;
-			ticks = currentTicks;
-		}, 5 * 20, 5 * 20);
+				if (currentTicks >= plugin.configuration.global.ticks && ticks < plugin.configuration.global.ticks) {
+					console.sendMessage("§2Spawning has resumed! TPS is over " + plugin.configuration.global.ticks + ".");
+				} else if (currentTicks < plugin.configuration.global.ticks && ticks >= plugin.configuration.global.ticks) {
+					console.sendMessage("§4Spawning has been paused! TPS is below " + plugin.configuration.global.ticks + ".");
+				}
+
+				time = currentTime;
+				ticks = currentTicks;
+			}, 5*20, 5*20);
+		}, 30*20);
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
@@ -59,7 +61,7 @@ public class Listeners implements Listener {
 		final HashSet spawnReasons = plugin.configuration.global.spawnReasons;
 
 		if (spawnReasons.contains(reason)) {
-			if (ticks < 16) {
+			if (ticks < plugin.configuration.global.ticks) {
 				final HashSet breedingCreatures = plugin.configuration.global.breedingCreatures;
 
 				if (reason != CreatureSpawnEvent.SpawnReason.BREEDING || breedingCreatures.contains(type)) {

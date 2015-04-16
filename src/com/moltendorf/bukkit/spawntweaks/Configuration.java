@@ -21,6 +21,7 @@ public class Configuration {
 		// Final data.
 		final protected boolean enabled = true; // Whether or not the plugin is enabled at all; useful for using it as an interface (default is true).
 
+		final protected int ticks = 16;
 		final protected int blockLight = 0;
 		final protected int skyLight = 4;
 
