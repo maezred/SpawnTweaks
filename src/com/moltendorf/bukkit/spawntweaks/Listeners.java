@@ -53,10 +53,10 @@ public class Listeners implements Listener {
 
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void CreatureSpawnEventListener(final CreatureSpawnEvent event) {
-		final Location location = event.getLocation();
-		final CreatureSpawnEvent.SpawnReason reason = event.getSpawnReason();
-		final EntityType type = event.getEntityType();
-		final World world = location.getWorld();
+		final Location                       location = event.getLocation();
+		final CreatureSpawnEvent.SpawnReason reason   = event.getSpawnReason();
+		final EntityType                     type     = event.getEntityType();
+		final World                          world    = location.getWorld();
 
 		final HashSet spawnReasons = plugin.configuration.global.spawnReasons;
 
@@ -88,7 +88,7 @@ public class Listeners implements Listener {
 			final BiomeConfig biomeConfig = plugin.configuration.global.biomes.get(biome);
 
 			if (biomeConfig != null && biomeConfig.search.contains(type)) {
-				final double roll = Math.random() * biomeConfig.maxRoll;
+				final double roll = Math.random()*biomeConfig.maxRoll;
 
 				for (Map.Entry<EntityType, Double> entry : biomeConfig.replace.entrySet()) {
 					if (roll < entry.getValue()) {
@@ -104,12 +104,12 @@ public class Listeners implements Listener {
 
 		// 2.5x more spawner mobs.
 		if (ticks > 18 && reason == CreatureSpawnEvent.SpawnReason.SPAWNER) {
-			final int roll = (int) (Math.random() * 4.);
+			final int roll = (int)(Math.random()*4d);
 
 			final BukkitScheduler scheduler = plugin.getServer().getScheduler();
 
 			for (int i = 0; i < roll; ++i) {
-				scheduler.scheduleSyncDelayedTask(plugin, () -> world.spawnEntity(location, type), (i + 1) * 20);
+				scheduler.scheduleSyncDelayedTask(plugin, () -> world.spawnEntity(location, type), (i + 1)*20);
 			}
 		}
 	}
