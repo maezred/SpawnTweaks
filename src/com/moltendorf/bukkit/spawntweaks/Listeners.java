@@ -1,6 +1,7 @@
 package com.moltendorf.bukkit.spawntweaks;
 
 import org.bukkit.Location;
+import org.bukkit.Server;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
@@ -30,19 +31,28 @@ public class Listeners implements Listener {
 	protected Listeners(final Plugin instance) {
 		plugin = instance;
 
-		final ConsoleCommandSender console = plugin.getServer().getConsoleSender();
+		final Server server = plugin.getServer();
+		final ConsoleCommandSender console = server.getConsoleSender();
 
-		plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
+		server.getScheduler().runTaskLater(plugin, () -> {
 			time = System.currentTimeMillis();
 
-			plugin.getServer().getScheduler().runTaskTimer(plugin, () -> {
+			server.getScheduler().runTaskTimer(plugin, () -> {
 				final long currentTime = System.currentTimeMillis();
 				final double currentTicks = 5.*20.*1000./(currentTime - time);
 
 				if (currentTicks >= plugin.configuration.global.ticks && ticks < plugin.configuration.global.ticks) {
 					console.sendMessage("§2Spawning has resumed! TPS is over " + plugin.configuration.global.ticks + ".");
+
+					for (final World world : server.getWorlds()) {
+						world.setGameRuleValue("doMobSpawning", "true");
+					}
 				} else if (currentTicks < plugin.configuration.global.ticks && ticks >= plugin.configuration.global.ticks) {
 					console.sendMessage("§4Spawning has been paused! TPS is below " + plugin.configuration.global.ticks + ".");
+
+					for (final World world : server.getWorlds()) {
+						world.setGameRuleValue("doMobSpawning", "false");
+					}
 				}
 
 				time = currentTime;
@@ -59,6 +69,13 @@ public class Listeners implements Listener {
 		final World                          world    = location.getWorld();
 
 		final HashSet spawnReasons = plugin.configuration.global.spawnReasons;
+
+		final double y = location.getY();
+		if (y >= 138 && y <= 154 && world.getName().equals("world_nether")) {
+			event.setCancelled(true);
+
+			return;
+		}
 
 		if (spawnReasons.contains(reason)) {
 			if (ticks < plugin.configuration.global.ticks) {
